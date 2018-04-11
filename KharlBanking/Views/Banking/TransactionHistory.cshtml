@@ -1,0 +1,60 @@
+﻿@model IEnumerable<KharlBanking.Models.Transaction>
+
+@{
+	ViewData["Title"] = "Transaction History";
+}
+
+<h2>Transaction History</h2>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.TransactionDate)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.TransactionType)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Amount)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.BalanceBefore)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.BalanceAfter)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Remarks)
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.TransactionDate)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.TransactionType)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Amount)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.BalanceBefore)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.BalanceAfter)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Remarks)
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+<div>
+	<a asp-action="AccountDetails" class="btn btn-primary">Return to Account</a>
+</div>
