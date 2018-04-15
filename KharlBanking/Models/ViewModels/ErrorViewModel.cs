@@ -1,6 +1,4 @@
-using System;
-
-namespace KharlBanking.Models
+namespace KharlBanking.Models.ViewModels
 {
     public class ErrorViewModel
     {

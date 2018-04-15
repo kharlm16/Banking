@@ -14,6 +14,7 @@ using KharlBanking.Models;
 using KharlBanking.Models.AccountViewModels;
 using KharlBanking.Services;
 using KharlBanking.Data;
+using KharlBanking.Models.Entities;
 
 namespace KharlBanking.Controllers
 {

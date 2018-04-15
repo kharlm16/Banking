@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using KharlBanking.Interfaces;
 
-namespace KharlBanking.Models
+namespace KharlBanking.Models.ViewModels
 {
     public class AccountDetailsListViewModel
     {
@@ -27,6 +25,7 @@ namespace KharlBanking.Models
 		[Display(Name = "Balance")]
 		public decimal Balance { get; set; }
 		[Required]
+		[Range(1, Int32.MaxValue, ErrorMessage = "Please enter an amount.")]
 		public decimal Amount { get; set; }
 		public byte[] RowVersion { get; set; }
 	}
@@ -34,12 +33,14 @@ namespace KharlBanking.Models
 	public class TransferViewModel : IBanking
 	{
 		[Display(Name = "Account Number")]
+		[Required(ErrorMessage = "Please enter the Account Number you want to deposit to.")]
 		public string AccountNumber { get; set; }
 		[Display(Name = "Account Name")]
 		public string AccountName { get; set; }
 		[Display(Name = "Balance")]
 		public decimal Balance { get; set; }
 		[Required]
+		[Range(1, Int32.MaxValue, ErrorMessage = "Please enter an amount.")]
 		public decimal Amount { get; set; }
 		[Required]
 		[Display(Name = "Transfer To")]

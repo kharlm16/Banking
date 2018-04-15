@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KharlBanking.Models
+namespace KharlBanking.Models.Entities
 {
     public class Transaction
     {

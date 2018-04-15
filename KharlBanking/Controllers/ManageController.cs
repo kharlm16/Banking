@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using KharlBanking.Models;
+using KharlBanking.Models.Entities;
 using KharlBanking.Models.ManageViewModels;
 using KharlBanking.Services;
 

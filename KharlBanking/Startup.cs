@@ -9,8 +9,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using KharlBanking.Data;
+using KharlBanking.Interfaces;
 using KharlBanking.Models;
+using KharlBanking.Models.Entities;
 using KharlBanking.Services;
+using StackExchange.Redis;
 
 namespace KharlBanking
 {
@@ -35,6 +38,7 @@ namespace KharlBanking
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+	        services.AddScoped<ITransactionManager, TransactionManager>();
 
             services.AddMvc();
         }

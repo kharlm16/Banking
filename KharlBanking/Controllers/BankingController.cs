@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using KharlBanking.Data;
+using KharlBanking.Interfaces;
 using KharlBanking.Models;
+using KharlBanking.Models.Entities;
+using KharlBanking.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,16 +18,18 @@ namespace KharlBanking.Controllers
 	[Authorize]
 	public class BankingController : Controller
     {
-		ApplicationDbContext _db;
+	    private ITransactionManager _transactionManager;
+	    private UserManager<ApplicationUser> _userManager;
 
-		public BankingController(ApplicationDbContext db)
+		public BankingController(ITransactionManager transactionManager, UserManager<ApplicationUser> userManager)
 		{
-			_db = db;
+			_transactionManager = transactionManager;
+			_userManager = userManager;
 		}
 		
-        public IActionResult AccountDetails()
-		{
-			var user = Helpers.GetCurrentUser(_db, User);
+        public async Task<IActionResult> AccountDetails()
+        {
+	        var user = await _userManager.GetUserAsync(User);
 
 			AccountDetailsListViewModel account = new AccountDetailsListViewModel()
 			{
@@ -36,9 +43,9 @@ namespace KharlBanking.Controllers
         }
 
 		[HttpGet]
-		public IActionResult Deposit()
+		public async Task<IActionResult> Deposit()
 		{
-			var user = Helpers.GetCurrentUser(_db, User);
+			var user = await _userManager.GetUserAsync(User);
 
 			WithdrawDepositViewModel account = new WithdrawDepositViewModel()
 			{
@@ -53,13 +60,18 @@ namespace KharlBanking.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Deposit(WithdrawDepositViewModel model)
+		public async Task<IActionResult> Deposit(WithdrawDepositViewModel model)
 		{
-			var user = Helpers.GetCurrentUser(_db, User);
+			var user = await _userManager.GetUserAsync(User);
+			
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
 
 			try
 			{
-				var transaction = Helpers.SaveFunds(TransactionType.Deposit, model, user, _db);
+				var transaction = await _transactionManager.SaveFunds(TransactionType.Deposit, model, user);
 				return View("TransactionSummary", transaction);
 			}
 			catch (Exception ex)
@@ -69,9 +81,9 @@ namespace KharlBanking.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult Withdraw()
+		public async Task<IActionResult> Withdraw()
 		{
-			var user = Helpers.GetCurrentUser(_db, User);
+			var user = await _userManager.GetUserAsync(User);
 
 			WithdrawDepositViewModel account = new WithdrawDepositViewModel()
 			{
@@ -86,13 +98,18 @@ namespace KharlBanking.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Withdraw(WithdrawDepositViewModel model)
+		public async Task<IActionResult> Withdraw(WithdrawDepositViewModel model)
 		{
-			var user = Helpers.GetCurrentUser(_db, User);
+			var user = await _userManager.GetUserAsync(User);
+
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
 
 			try
 			{
-				var transaction = Helpers.SaveFunds(TransactionType.Withdraw, model, user, _db);
+				var transaction = await _transactionManager.SaveFunds(TransactionType.Withdraw, model, user);
 				return View("TransactionSummary", transaction);
 			}
 			catch (Exception ex)
@@ -102,9 +119,9 @@ namespace KharlBanking.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult Transfer()
+		public async Task<IActionResult> Transfer()
 		{
-			var user = Helpers.GetCurrentUser(_db, User);
+			var user = await _userManager.GetUserAsync(User);
 
 			TransferViewModel account = new TransferViewModel()
 			{
@@ -119,13 +136,18 @@ namespace KharlBanking.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Transfer(TransferViewModel model)
+		public async Task<IActionResult> Transfer(TransferViewModel model)
 		{
-			var user = Helpers.GetCurrentUser(_db, User);
+			var user = await _userManager.GetUserAsync(User);
+
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
 
 			try
 			{
-				var transaction = Helpers.TransferFunds(model, user, _db);
+				var transaction = await _transactionManager.TransferFunds(model, user);
 				return View("TransactionSummary", transaction);
 			}
 			catch (Exception ex)
@@ -134,20 +156,16 @@ namespace KharlBanking.Controllers
 			}
 		}
 
-		public IActionResult TransactionHistory()
+		public async Task<IActionResult> TransactionHistory()
 		{
-			var userId = User.Claims.Where(p => p.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").FirstOrDefault().Value;
-
-			var history = _db.Transactions
-				.AsNoTracking()
-				.Where(p => p.UserId == userId)
-				.OrderByDescending(p => p.TransactionDate)
-				.ToList();
+			var user = await _userManager.GetUserAsync(User);
+			string userid = user.Id;
+			var history = await _transactionManager.GetTransactions(userid);
 
 			return View(history);
 		}
 
-		public IActionResult Error(string message)
+		public async Task<IActionResult> Error(string message)
 		{
 			ViewBag.ErrorMessage = message;
 

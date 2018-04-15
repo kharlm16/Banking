@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using KharlBanking.Models;
+using KharlBanking.Models.Entities;
 
 namespace KharlBanking.Data
 {
