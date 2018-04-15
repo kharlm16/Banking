@@ -33,7 +33,6 @@ namespace KharlBanking.Models.ViewModels
 	public class TransferViewModel : IBanking
 	{
 		[Display(Name = "Account Number")]
-		[Required(ErrorMessage = "Please enter the Account Number you want to deposit to.")]
 		public string AccountNumber { get; set; }
 		[Display(Name = "Account Name")]
 		public string AccountName { get; set; }
@@ -42,7 +41,7 @@ namespace KharlBanking.Models.ViewModels
 		[Required]
 		[Range(1, Int32.MaxValue, ErrorMessage = "Please enter an amount.")]
 		public decimal Amount { get; set; }
-		[Required]
+		[Required(ErrorMessage = "Please enter the Account Number you want to deposit to.")]
 		[Display(Name = "Transfer To")]
 		public string TransferToAccount { get; set; }
 		public byte[] RowVersion { get; set; }

@@ -257,13 +257,13 @@ namespace KharlBanking.Tests
 		[Fact]
 		public async Task GoBackToViewIfModelInvalidForPostTransfer()
 		{
-			TransferViewModel model = new TransferViewModel() { Amount = 0.00m };
+			TransferViewModel model = new TransferViewModel() { Amount = 0.00m, TransferToAccount = ""};
 			if (model.Amount < 1)
 			{
 				_controller.ModelState.AddModelError("Amount", "Please enter an amount.");
 			}
 
-			if (String.IsNullOrWhiteSpace(model.AccountNumber))
+			if (String.IsNullOrWhiteSpace(model.TransferToAccount))
 			{
 				_controller.ModelState.AddModelError("AccountNumber", "Please enter the Account Number you want to deposit to.");
 			}
@@ -282,13 +282,13 @@ namespace KharlBanking.Tests
 				.Setup(x => x.TransferFunds(It.IsAny<TransferViewModel>(), It.IsAny<ApplicationUser>()))
 				.ReturnsAsync(new Transaction());
 
-			TransferViewModel model = new TransferViewModel() { Amount = 1.00m, AccountNumber = "00000002" };
+			TransferViewModel model = new TransferViewModel() { Amount = 1.00m, TransferToAccount = "00000002" };
 			if (model.Amount < 1)
 			{
 				_controller.ModelState.AddModelError("Amount", "Please enter an amount.");
 			}
 
-			if (String.IsNullOrWhiteSpace(model.AccountNumber))
+			if (String.IsNullOrWhiteSpace(model.TransferToAccount))
 			{
 				_controller.ModelState.AddModelError("AccountNumber", "Please enter the Account Number you want to deposit to.");
 			}
