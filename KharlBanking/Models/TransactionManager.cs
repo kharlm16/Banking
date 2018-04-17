@@ -63,9 +63,9 @@ namespace KharlBanking.Models
 			    await _db.SaveChangesAsync();
 			    return transaction;
 		    }
-		    catch (DbUpdateConcurrencyException)
+		    catch (DbUpdateConcurrencyException ex)
 		    {
-			    throw new Exception("Another transaction is ongoing with your account. Please try again.");
+			    throw new Exception("Another transaction is ongoing with your account. Please try again.", ex);
 		    }
 	    }
 
